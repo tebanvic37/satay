@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sakay! Tagalog Verb Route</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --asphalt:#211E26;
+    --asphalt-light:#2E2A35;
+    --sign-cream:#FBEEDC;
+    --jeep-red:#C63D2F;
+    --jeep-yellow:#F2B705;
+    --jeep-teal:#1B998B;
+    --ink:#241F1C;
+    --ink-soft:#6b6259;
+    --good:#1B998B;
+    --bad:#C63D2F;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse at 20% -10%, #35303f 0%, transparent 55%),
+      radial-gradient(ellipse at 90% 110%, #2b2733 0%, transparent 55%),
+      var(--asphalt);
+    min-height:100vh;
+    font-family:'Work Sans', sans-serif;
+    color:var(--sign-cream);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:28px 16px;
+  }
+  .stage{
+    width:100%;
+    max-width:640px;
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    text-align:center;
+    margin-bottom:18px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--jeep-yellow);
+    margin:0 0 6px;
+  }
+  h1{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:800;
+    font-size:clamp(30px,7vw,42px);
+    margin:0;
+    color:var(--sign-cream);
+    letter-spacing:.01em;
+    text-shadow: 3px 3px 0 rgba(198,61,47,0.55);
+  }
+  .subtitle{
+    margin:8px auto 0;
+    max-width:440px;
+    font-size:14.5px;
+    color:#c9c2b8;
+    line-height:1.5;
+  }
+
+  /* ---------- Route / road track ---------- */
+  .route{
+    position:relative;
+    background:linear-gradient(180deg,#3a3546,#2a2632);
+    border-radius:16px;
+    padding:22px 18px 16px;
+    margin-bottom:18px;
+    border:1px solid #45404f;
+  }
+  .route-label{
+    display:flex;
+    justify-content:space-between;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:#a49c90;
+    margin-bottom:10px;
+    letter-spacing:.04em;
+  }
+  .road{
+    position:relative;
+    height:34px;
+    background:#161319;
+    border-radius:8px;
+    overflow:hidden;
+    box-shadow:inset 0 2px 6px rgba(0,0,0,.5);
+  }
+  .road::before{
+    content:'';
+    position:absolute;
+    top:50%; left:0; right:0;
+    height:0;
+    border-top:3px dashed #55503f;
+    transform:translateY(-50%);
+    opacity:.8;
+  }
+  .road-fill{
+    position:absolute;
+    top:0; left:0; bottom:0;
+    width:0%;
+    background:linear-gradient(90deg,rgba(27,153,139,.18),rgba(27,153,139,.32));
+    transition:width .5s cubic-bezier(.4,1.4,.6,1);
+    border-radius:8px;
+  }
+  .jeep{
+    position:absolute;
+    top:50%;
+    left:0%;
+    width:46px;
+    transform:translate(-6px,-52%);
+    transition:left .6s cubic-bezier(.34,1.56,.64,1);
+    filter:drop-shadow(0 3px 3px rgba(0,0,0,.5));
+  }
+  .jeep svg{display:block;width:100%;height:auto;}
+  .stops{
+    display:flex;
+    justify-content:space-between;
+    margin-top:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    color:#847c70;
+  }
+
+  /* ---------- Question card ---------- */
+  .card{
+    background:var(--sign-cream);
+    color:var(--ink);
+    border-radius:18px;
+    padding:26px 24px 22px;
+    box-shadow:0 14px 0 rgba(0,0,0,.28), 0 20px 40px rgba(0,0,0,.35);
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:'';
+    position:absolute;
+    top:0;left:0;right:0;height:9px;
+    background:repeating-linear-gradient(90deg,var(--jeep-yellow) 0 22px,var(--jeep-red) 22px 44px);
+  }
+  .tagset{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin:10px 0 14px;
+  }
+  .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.03em;
+    padding:4px 10px;
+    border-radius:999px;
+    font-weight:600;
+  }
+  .tag.focus{background:#e4dcc9; color:var(--ink);}
+  .tag.aspect{background:var(--jeep-teal); color:#fff;}
+
+  .prompt-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    margin-bottom:2px;
+  }
+  .root-row{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:4px;
+  }
+  .root-word{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:800;
+    font-size:clamp(30px,8vw,40px);
+    line-height:1;
+  }
+  .gloss{
+    font-size:15px;
+    color:var(--ink-soft);
+    font-style:italic;
+  }
+  .instruction{
+    font-size:14px;
+    color:var(--ink-soft);
+    margin:6px 0 18px;
+  }
+
+  .answers{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  @media (max-width:420px){ .answers{grid-template-columns:1fr;} }
+
+  .ans-btn{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:16px;
+    font-weight:600;
+    background:#fff;
+    color:var(--ink);
+    border:2px solid #d9cfb9;
+    border-radius:10px;
+    padding:13px 10px;
+    cursor:pointer;
+    transition:transform .12s ease, border-color .12s ease, background .12s ease;
+    text-align:center;
+  }
+  .ans-btn:hover:not(:disabled){
+    border-color:var(--jeep-teal);
+    transform:translateY(-2px);
+  }
+  .ans-btn:active:not(:disabled){ transform:translateY(0); }
+  .ans-btn:disabled{ cursor:default; }
+  .ans-btn.correct{
+    background:var(--good);
+    border-color:var(--good);
+    color:#fff;
+    animation:pop .4s ease;
+  }
+  .ans-btn.wrong{
+    background:var(--bad);
+    border-color:var(--bad);
+    color:#fff;
+    animation:shake .4s ease;
+  }
+  @keyframes pop{ 0%{transform:scale(1);} 45%{transform:scale(1.06);} 100%{transform:scale(1);} }
+  @keyframes shake{
+    10%,90%{transform:translateX(-2px);}
+    20%,80%{transform:translateX(3px);}
+    30%,50%,70%{transform:translateX(-5px);}
+    40%,60%{transform:translateX(5px);}
+  }
+
+  .feedback{
+    min-height:20px;
+    margin-top:14px;
+    font-size:13.5px;
+    color:var(--ink-soft);
+  }
+  .feedback b{ color:var(--ink); }
+
+  .next-btn{
+    display:none;
+    margin-top:14px;
+    width:100%;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:16px;
+    background:var(--jeep-red);
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    padding:12px;
+    cursor:pointer;
+    box-shadow:0 4px 0 #8f2c22;
+  }
+  .next-btn:active{ transform:translateY(2px); box-shadow:0 2px 0 #8f2c22; }
+
+  /* ---------- Footer stats ---------- */
+  .stats{
+    display:flex;
+    justify-content:space-between;
+    margin-top:16px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color:#b6ae9f;
+    padding:0 4px;
+  }
+  .stats span b{ color:var(--jeep-yellow); font-size:14px; }
+
+  /* ---------- End screen ---------- */
+  .end-overlay{
+    display:none;
+    background:var(--sign-cream);
+    color:var(--ink);
+    border-radius:18px;
+    padding:34px 26px;
+    text-align:center;
+    box-shadow:0 14px 0 rgba(0,0,0,.28), 0 20px 40px rgba(0,0,0,.35);
+    position:relative;
+    overflow:hidden;
+  }
+  .end-overlay::before{
+    content:'';
+    position:absolute;
+    top:0;left:0;right:0;height:9px;
+    background:repeating-linear-gradient(90deg,var(--jeep-yellow) 0 22px,var(--jeep-red) 22px 44px);
+  }
+  .end-overlay .badge{
+    font-family:'Baloo 2', sans-serif;
+    font-size:15px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--jeep-teal);
+    margin-bottom:6px;
+  }
+  .end-overlay h2{
+    font-family:'Baloo 2', sans-serif;
+    font-size:clamp(26px,7vw,34px);
+    margin:0 0 10px;
+  }
+  .end-overlay p{
+    font-size:14.5px;
+    color:var(--ink-soft);
+    margin:0 0 22px;
+    line-height:1.5;
+  }
+  .end-overlay .score-big{
+    font-family:'Baloo 2', sans-serif;
+    font-size:52px;
+    font-weight:800;
+    color:var(--jeep-red);
+    line-height:1;
+    margin-bottom:2px;
+  }
+  .restart-btn{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:16px;
+    background:var(--jeep-teal);
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    padding:13px 22px;
+    cursor:pointer;
+    box-shadow:0 4px 0 #106e64;
+  }
+  .restart-btn:active{ transform:translateY(2px); box-shadow:0 2px 0 #106e64; }
+
+  .confetti{
+    position:fixed;
+    width:8px;height:8px;
+    border-radius:2px;
+    pointer-events:none;
+    z-index:50;
+    top:0;left:0;
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <header>
+    <p class="eyebrow">Barangay Wika &middot; Actor-Focus Verbs</p>
+    <h1>Sakay! Verb Route</h1>
+    <p class="subtitle">Every correct conjugation moves the jeepney one stop closer. Pick the right form of the verb before it reaches Pantay Terminal.</p>
+  </header>
+
+  <div class="route">
+    <div class="route-label">
+      <span id="stopName">Terminal</span>
+      <span id="progressText">0 / 10 stops</span>
+    </div>
+    <div class="road">
+      <div class="road-fill" id="roadFill"></div>
+      <div class="jeep" id="jeep" style="left:0%;">
+        <svg viewBox="0 0 100 48" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="16" width="80" height="20" rx="4" fill="#C63D2F"/>
+          <rect x="10" y="6" width="58" height="16" rx="3" fill="#F2B705"/>
+          <rect x="14" y="9" width="12" height="9" rx="1" fill="#1B998B"/>
+          <rect x="30" y="9" width="12" height="9" rx="1" fill="#1B998B"/>
+          <rect x="46" y="9" width="12" height="9" rx="1" fill="#1B998B"/>
+          <circle cx="22" cy="38" r="7" fill="#211E26"/>
+          <circle cx="68" cy="38" r="7" fill="#211E26"/>
+          <circle cx="22" cy="38" r="2.6" fill="#c9c2b8"/>
+          <circle cx="68" cy="38" r="2.6" fill="#c9c2b8"/>
+          <rect x="84" y="20" width="10" height="12" rx="2" fill="#8f2c22"/>
+        </svg>
+      </div>
+    </div>
+    <div class="stops"><span>Sulyap</span><span>Kanto</span><span>Palengke</span><span>Terminal</span></div>
+  </div>
+
+  <div class="card" id="quizCard">
+    <div class="tagset">
+      <span class="tag focus" id="tagFocus">UM- verb</span>
+      <span class="tag aspect" id="tagAspect">Completed</span>
+    </div>
+    <p class="prompt-label">Root word</p>
+    <div class="root-row">
+      <span class="root-word" id="rootWord">kain</span>
+      <span class="gloss" id="rootGloss">"to eat"</span>
+    </div>
+    <p class="instruction" id="instruction">Choose the correct completed-aspect form.</p>
+
+    <div class="answers" id="answers"></div>
+
+    <p class="feedback" id="feedback">&nbsp;</p>
+    <button class="next-btn" id="nextBtn">Sakay ulit! (Next stop) &rarr;</button>
+  </div>
+
+  <div class="end-overlay" id="endOverlay">
+    <p class="badge" id="endBadge">Piloto ng Jeepney</p>
+    <h2 id="endTitle">Route complete!</h2>
+    <div class="score-big" id="endScore">10/10</div>
+    <p id="endText">You conjugated every verb correctly and got the jeepney to Terminal without a single flat tire.</p>
+    <button class="restart-btn" id="restartBtn">Bagong Ruta &middot; New Route</button>
+  </div>
+
+  <div class="stats" id="statsBar">
+    <span>Score: <b id="scoreVal">0</b></span>
+    <span>Streak: <b id="streakVal">0</b></span>
+    <span>Best: <b id="bestVal">0</b></span>
+  </div>
+</div>
+
+<script>
+(function(){
+  const ASPECTS = [
+    {key:'comp', label:'Completed', instr:'Choose the correct completed-aspect form (already happened).'},
+    {key:'prog', label:'Progressive', instr:'Choose the correct progressive-aspect form (happening now).'},
+    {key:'cont', label:'Contemplative', instr:'Choose the correct contemplative-aspect form (will happen).'}
+  ];
+
+  const VERBS = [
+    {root:'kain', gloss:'to eat', focus:'um', forms:{comp:'kumain', prog:'kumakain', cont:'kakain'}},
+    {root:'inom', gloss:'to drink', focus:'um', forms:{comp:'uminom', prog:'umiinom', cont:'iinom'}},
+    {root:'alis', gloss:'to leave', focus:'um', forms:{comp:'umalis', prog:'umaalis', cont:'aalis'}},
+    {root:'tawa', gloss:'to laugh', focus:'um', forms:{comp:'tumawa', prog:'tumatawa', cont:'tatawa'}},
+    {root:'upo', gloss:'to sit', focus:'um', forms:{comp:'umupo', prog:'umuupo', cont:'uupo'}},
+    {root:'tanong', gloss:'to ask', focus:'um', forms:{comp:'tumanong', prog:'tumatanong', cont:'tatanong'}},
+    {root:'luto', gloss:'to cook', focus:'mag', forms:{comp:'nagluto', prog:'nagluluto', cont:'magluluto'}},
+    {root:'laba', gloss:'to do laundry', focus:'mag', forms:{comp:'naglaba', prog:'naglalaba', cont:'maglalaba'}},
+    {root:'aral', gloss:'to study', focus:'mag', forms:{comp:'nag-aral', prog:'nag-aaral', cont:'mag-aaral'}},
+    {root:'trabaho', gloss:'to work', focus:'mag', forms:{comp:'nagtrabaho', prog:'nagtatrabaho', cont:'magtatrabaho'}},
+    {root:'bihis', gloss:'to get dressed', focus:'mag', forms:{comp:'nagbihis', prog:'nagbibihis', cont:'magbibihis'}},
+    {root:'linis', gloss:'to clean', focus:'mag', forms:{comp:'naglinis', prog:'naglilinis', cont:'maglilinis'}}
+  ];
+
+  const TOTAL_STOPS = 10;
+  const STOP_NAMES = ['Sulyap','Sulyap','Kanto','Kanto','Kanto','Palengke','Palengke','Palengke','Terminal','Terminal'];
+
+  let deck = [];
+  let idx = 0;
+  let score = 0;
+  let streak = 0;
+  let best = 0;
+  let locked = false;
+
+  const jeep = document.getElementById('jeep');
+  const roadFill = document.getElementById('roadFill');
+  const stopName = document.getElementById('stopName');
+  const progressText = document.getElementById('progressText');
+  const tagFocus = document.getElementById('tagFocus');
+  const tagAspect = document.getElementById('tagAspect');
+  const rootWord = document.getElementById('rootWord');
+  const rootGloss = document.getElementById('rootGloss');
+  const instruction = document.getElementById('instruction');
+  const answersEl = document.getElementById('answers');
+  const feedback = document.getElementById('feedback');
+  const nextBtn = document.getElementById('nextBtn');
+  const quizCard = document.getElementById('quizCard');
+  const endOverlay = document.getElementById('endOverlay');
+  const statsBar = document.getElementById('statsBar');
+  const routeBlock = document.querySelector('.route');
+  const scoreVal = document.getElementById('scoreVal');
+  const streakVal = document.getElementById('streakVal');
+  const bestVal = document.getElementById('bestVal');
+  const endBadge = document.getElementById('endBadge');
+  const endTitle = document.getElementById('endTitle');
+  const endScore = document.getElementById('endScore');
+  const endText = document.getElementById('endText');
+  const restartBtn = document.getElementById('restartBtn');
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+
+  function buildDeck(){
+    const pairs = [];
+    VERBS.forEach(v=>{
+      ASPECTS.forEach(a=>{
+        pairs.push({verb:v, aspect:a.key});
+      });
+    });
+    deck = shuffle(pairs).slice(0, TOTAL_STOPS);
+    idx = 0; score = 0; streak = 0; locked = false;
+    updateStats();
+    updateRoute();
+    quizCard.style.display = 'block';
+    statsBar.style.display = 'flex';
+    routeBlock.style.display = 'block';
+    endOverlay.style.display = 'none';
+    renderQuestion();
+  }
+
+  function updateStats(){
+    scoreVal.textContent = score;
+    streakVal.textContent = streak;
+    bestVal.textContent = best;
+  }
+
+  function updateRoute(){
+    const pct = (idx / TOTAL_STOPS) * 96; // leave room so jeep icon stays on track
+    jeep.style.left = pct + '%';
+    roadFill.style.width = pct + '%';
+    progressText.textContent = idx + ' / ' + TOTAL_STOPS + ' stops';
+    stopName.textContent = STOP_NAMES[Math.min(idx, STOP_NAMES.length-1)];
+  }
+
+  function makeOptions(correctVerb, aspectKey){
+    const correctAnswer = correctVerb.forms[aspectKey];
+    const pool = new Set([correctAnswer]);
+
+    // Strong distractors: same verb, other aspects
+    const otherAspects = ASPECTS.map(a=>a.key).filter(k=>k!==aspectKey);
+    shuffle(otherAspects).forEach(k=>{
+      if(pool.size < 3) pool.add(correctVerb.forms[k]);
+    });
+
+    // Fill remaining with same-aspect forms from other verbs
+    const others = shuffle(VERBS.filter(v=>v.root!==correctVerb.root));
+    let i=0;
+    while(pool.size < 4 && i < others.length){
+      pool.add(others[i].forms[aspectKey]);
+      i++;
+    }
+
+    return shuffle(Array.from(pool));
+  }
+
+  function renderQuestion(){
+    locked = false;
+    feedback.innerHTML = '&nbsp;';
+    nextBtn.style.display = 'none';
+
+    const item = deck[idx];
+    const verb = item.verb;
+    const aspectDef = ASPECTS.find(a=>a.key===item.aspect);
+
+    tagFocus.textContent = (verb.focus === 'um' ? 'UM- verb' : 'MAG- verb');
+    tagAspect.textContent = aspectDef.label;
+    rootWord.textContent = verb.root;
+    rootGloss.textContent = '"' + verb.gloss + '"';
+    instruction.textContent = aspectDef.instr;
+
+    const options = makeOptions(verb, item.aspect);
+    answersEl.innerHTML = '';
+    options.forEach(opt=>{
+      const btn = document.createElement('button');
+      btn.className = 'ans-btn';
+      btn.textContent = opt;
+      btn.addEventListener('click', ()=>handleAnswer(btn, opt, verb.forms[item.aspect], verb));
+      answersEl.appendChild(btn);
+    });
+  }
+
+  function burstConfetti(originEl){
+    const colors = ['#C63D2F','#F2B705','#1B998B','#FBEEDC'];
+    const rect = originEl.getBoundingClientRect();
+    for(let i=0;i<16;i++){
+      const p = document.createElement('div');
+      p.className = 'confetti';
+      p.style.background = colors[i % colors.length];
+      p.style.left = (rect.left + rect.width/2) + 'px';
+      p.style.top = (rect.top + rect.height/2) + 'px';
+      document.body.appendChild(p);
+      const angle = Math.random()*Math.PI*2;
+      const dist = 60 + Math.random()*70;
+      const dx = Math.cos(angle)*dist;
+      const dy = Math.sin(angle)*dist - 30;
+      p.animate([
+        {transform:'translate(0,0) rotate(0deg)', opacity:1},
+        {transform:`translate(${dx}px, ${dy+120}px) rotate(${360*(Math.random()>0.5?1:-1)}deg)`, opacity:0}
+      ], {duration: 700 + Math.random()*300, easing:'cubic-bezier(.2,.8,.4,1)'});
+      setTimeout(()=>p.remove(), 1100);
+    }
+  }
+
+  function handleAnswer(btn, chosen, correctAnswer, verb){
+    if(locked) return;
+    locked = true;
+    const buttons = answersEl.querySelectorAll('.ans-btn');
+    buttons.forEach(b=>b.disabled = true);
+
+    if(chosen === correctAnswer){
+      btn.classList.add('correct');
+      score++;
+      streak++;
+      if(streak > best) best = streak;
+      feedback.innerHTML = '<b>Tama!</b> ' + capitalize(correctAnswer) + ' is correct \u2014 the jeepney rolls on.';
+      burstConfetti(btn);
+    } else {
+      btn.classList.add('wrong');
+      streak = 0;
+      buttons.forEach(b=>{ if(b.textContent === correctAnswer) b.classList.add('correct'); });
+      feedback.innerHTML = '<b>Mali.</b> Correct answer: <b>' + correctAnswer + '</b> \u2014 flat tire, but we keep going.';
+    }
+
+    updateStats();
+    idx++;
+    updateRoute();
+    nextBtn.style.display = 'block';
+  }
+
+  function capitalize(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  nextBtn.addEventListener('click', ()=>{
+    if(idx >= TOTAL_STOPS){
+      showEnd();
+    } else {
+      renderQuestion();
+    }
+  });
+
+  function showEnd(){
+    quizCard.style.display = 'none';
+    statsBar.style.display = 'none';
+    routeBlock.style.display = 'none';
+    endOverlay.style.display = 'block';
+    endScore.textContent = score + '/' + TOTAL_STOPS;
+
+    let badge, title, text;
+    const ratio = score / TOTAL_STOPS;
+    if(ratio >= 0.9){
+      badge = 'Piloto ng Jeepney'; title = 'Route complete!';
+      text = 'You conjugated almost every verb correctly and got the jeepney to Terminal in style.';
+    } else if(ratio >= 0.7){
+      badge = 'Konduktor'; title = 'Nice driving!';
+      text = 'Solid run \u2014 a few bumps in the road, but you kept the jeepney moving forward.';
+    } else if(ratio >= 0.5){
+      badge = 'Regular na Pasahero'; title = 'Halfway there!';
+      text = 'You know the route. Review the aspects that tripped you up and take another ride.';
+    } else {
+      badge = 'Bagong Sakay'; title = 'First ride done!';
+      text = 'Every rider starts somewhere. Try again \u2014 the same 12 verbs will come back in a new order.';
+    }
+    endBadge.textContent = badge;
+    endTitle.textContent = title;
+    endText.textContent = text;
+  }
+
+  restartBtn.addEventListener('click', buildDeck);
+
+  buildDeck();
+})();
+</script>
+
+</body>
+</html>
